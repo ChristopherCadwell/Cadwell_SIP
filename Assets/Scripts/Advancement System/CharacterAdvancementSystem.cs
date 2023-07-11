@@ -5,5 +5,8 @@ using UnityEngine;
 
 public class CharacterAdvancementSystem : MonoBehaviour
 {
-    
+    public void CheckProgressVectors()
+    {
+
+    }
 }

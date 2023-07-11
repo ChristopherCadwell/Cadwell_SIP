@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
+using static CharacterStats;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -98,6 +99,13 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
+        // Advancement
+        private CharacterAdvancementSystem advancementSystem;
+        private Rigidbody rb;
+        private CharacterStats stats;
+        [SerializeField] private float walkingThreshold = 1.0f;
+
+
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
 #endif
@@ -150,15 +158,25 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+
+            advancementSystem = GetComponent<CharacterAdvancementSystem>();
         }
 
         private void Update()
         {
+
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
             GroundedCheck();
             Move();
+
+            // Check if player is walking
+            if (IsWalking())
+            {
+                // Increase agility
+                stats.AddProgress(ActionType.Walk, 1.0f);
+            }
         }
 
         private void LateUpdate()
@@ -388,5 +406,21 @@ namespace StarterAssets
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
         }
+
+        bool IsWalking()
+        {
+            // Check if horizontal velocity is above a certain threshold
+            return Mathf.Abs(rb.velocity.x) > walkingThreshold;
+        }
+
+        bool IsCollidingWithWall()
+        {
+            return true;
+            // Implement a method to check if the player is colliding with a wall
+            // This could be done using raycasting or collision detection
+        }
+
     }
+
+    
 }

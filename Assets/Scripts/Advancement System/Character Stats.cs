@@ -5,6 +5,16 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
+    public enum ActionType
+    {
+        Walk,
+        Run,
+        Fall,
+        takeMeleeDamage,
+        takeMagicDamage,
+        PhysicalAttack,
+        MagicAttack
+    }
     public float strength = 1.0f;
     public float intelligence = 1.0f;
     public float willpower = 1.0f;
@@ -37,5 +47,10 @@ public class CharacterStats : MonoBehaviour
     {
         Stats = new Vector6(strength, intelligence, agility, willpower, luck, charisma);
     }
-    
+    public void AddProgress(ActionType actionType, float increaseValue)
+    {
+        // ActionType is an enum you define that corresponds to different actions
+        // that can increase a stat.
+        
+    }
 }
