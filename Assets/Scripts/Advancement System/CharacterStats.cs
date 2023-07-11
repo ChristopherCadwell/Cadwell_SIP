@@ -1,20 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using NVectors;
+using StarterAssets;
 using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
-    public enum ActionType
-    {
-        Walk,
-        Run,
-        Fall,
-        takeMeleeDamage,
-        takeMagicDamage,
-        PhysicalAttack,
-        MagicAttack
-    }
     public float strength = 1.0f;
     public float intelligence = 1.0f;
     public float willpower = 1.0f;
@@ -26,15 +17,19 @@ public class CharacterStats : MonoBehaviour
     public float maxMana;
     public float baseMoveSpeed;
 
+    public float walkingThreshold = 1.0f;
+
     public Vector6 Stats { get; set; }
     public Vector6 ProgressVectors { get; private set; }
 
-    private Dictionary<string, int> stats = new Dictionary<string, int>();
+    private ThirdPersonController controller;
 
     private void Start()
     {
+        controller = GetComponent<ThirdPersonController>();
         // Assign the initial values of your stats to the Stats vector
         Stats = new Vector6(strength, intelligence, agility, willpower, luck, charisma);
+        ProgressVectors = new Vector6();
 
         // Determine misc values
         baseDefense = (strength + willpower) / 4;
@@ -43,27 +38,21 @@ public class CharacterStats : MonoBehaviour
         baseMoveSpeed = 5 + (agility / 4);
     }
 
-    // Stat changes
-    public void UpdateStatsVector()
+    public void IncreaseAgility()
     {
-        Stats = new Vector6(strength, intelligence, agility, willpower, luck, charisma);
-    }
-    public void AddProgress(ActionType actionType, float increaseValue)
-    {
-        // ActionType is an enum you define that corresponds to different actions
-        // that can increase a stat.
-        
-    }
-    public int GetStatValue(string statName)
-    {
-        // Check if the stat exists in the stats dictionary
-        if (!stats.ContainsKey(statName))
-        {
-            // If not, return 0 or some default value
-            return 0;
-        }
+        // Define the increment for agility.
+        float agilityIncrement = 0.01f;
 
-        // Return the value of the stat
-        return stats[statName];
+        // Increase the agility stat
+        agility += agilityIncrement;
+
+        // Create a new Vector6 with the increased agility value, and assign it to ProgressVectors
+        ProgressVectors = new Vector6(ProgressVectors.a, ProgressVectors.b, ProgressVectors.c + agilityIncrement,
+            ProgressVectors.d, ProgressVectors.e, ProgressVectors.f);
+        Debug.Log("Vector moved " + ProgressVectors);
+
+        // Recalculate dependent values
+        baseMoveSpeed = 5 + (agility / 4);
+        controller.UpdateMoveSpeed(baseMoveSpeed);
     }
 }

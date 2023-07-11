@@ -17,7 +17,7 @@ namespace StarterAssets
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
-        public float MoveSpeed = 2.0f;
+        public float MoveSpeed;
 
         [Tooltip("Sprint speed of the character in m/s")]
         public float SprintSpeed = 5.335f;
@@ -101,7 +101,6 @@ namespace StarterAssets
 
         // Advancement
         private CharacterAdvancementSystem advancementSystem;
-        private Rigidbody rb;
         private CharacterStats stats;
         [SerializeField] private float walkingThreshold = 1.0f;
 
@@ -170,13 +169,6 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
-
-            // Check if player is walking
-            if (IsWalking())
-            {
-                // Increase agility
-                stats.AddProgress(ActionType.Walk, 1.0f);
-            }
         }
 
         private void LateUpdate()
@@ -407,17 +399,9 @@ namespace StarterAssets
             }
         }
 
-        bool IsWalking()
+        public void UpdateMoveSpeed(float value)
         {
-            // Check if horizontal velocity is above a certain threshold
-            return Mathf.Abs(rb.velocity.x) > walkingThreshold;
-        }
-
-        bool IsCollidingWithWall()
-        {
-            return true;
-            // Implement a method to check if the player is colliding with a wall
-            // This could be done using raycasting or collision detection
+            MoveSpeed = value;
         }
 
     }
