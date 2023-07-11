@@ -22,6 +22,10 @@ public class CharacterStats : MonoBehaviour
     public Vector6 Stats { get; set; }
     public Vector6 ProgressVectors { get; private set; }
 
+    private Vector6 progressThresholds = new Vector6(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+
+    private float thresholdMultiplier = 1.2f;
+
     private ThirdPersonController controller;
 
     private void Start()
@@ -35,24 +39,54 @@ public class CharacterStats : MonoBehaviour
         baseDefense = (strength + willpower) / 4;
         maxHealth = 20 + (strength * 2);
         maxMana = 20 + (intelligence * 2);
-        baseMoveSpeed = 5 + (agility / 4);
+        baseMoveSpeed = 1 + (agility / 4);
     }
 
     public void IncreaseAgility()
     {
         // Define the increment for agility.
-        float agilityIncrement = 0.01f;
+        float agilityIncrement = 1f;
 
         // Increase the agility stat
         agility += agilityIncrement;
 
-        // Create a new Vector6 with the increased agility value, and assign it to ProgressVectors
-        ProgressVectors = new Vector6(ProgressVectors.a, ProgressVectors.b, ProgressVectors.c + agilityIncrement,
-            ProgressVectors.d, ProgressVectors.e, ProgressVectors.f);
-        Debug.Log("Vector moved " + ProgressVectors);
-
         // Recalculate dependent values
-        baseMoveSpeed = 5 + (agility / 4);
+        baseMoveSpeed = 1 + (agility / 4);
         controller.UpdateMoveSpeed(baseMoveSpeed);
+    }
+    private void CheckProgressVectors()
+    {
+        Debug.Log("Checking");
+
+        // Check if the agility progress vector has reached its threshold
+        if (ProgressVectors.c >= progressThresholds.c)
+        {
+            Debug.Log("True");
+
+            // Increase the agility stat
+            IncreaseAgility();
+
+            // Reset the agility progress vector
+            ProgressVectors = new Vector6(ProgressVectors.a, ProgressVectors.b, 0, ProgressVectors.d, ProgressVectors.e, ProgressVectors.f);
+
+            // Increase the agility progress vector threshold
+            progressThresholds = new Vector6(progressThresholds.a, progressThresholds.b, progressThresholds.c * thresholdMultiplier, progressThresholds.d, progressThresholds.e, progressThresholds.f);
+
+            // Update the Stats vector
+            Stats = new Vector6(strength, intelligence, agility, willpower, luck, charisma);
+        }
+
+
+        // Repeat for other stats...
+    }
+    public void IncreaseProgressVectors(float strength, float intelligence, float agility, float willpower, float luck, float charisma)
+    {
+        ProgressVectors = new Vector6(ProgressVectors.a + strength, ProgressVectors.b + intelligence, ProgressVectors.c + agility,
+        ProgressVectors.d + willpower, ProgressVectors.e + luck, ProgressVectors.f + charisma);
+        Debug.Log("Increased progress vectors " + ProgressVectors.c);
+
+        // Check if any progress vector has reached its threshold
+        CheckProgressVectors();
+
     }
 }

@@ -21,7 +21,9 @@ public class CharacterAdvancementSystem : MonoBehaviour
         // Check if the player is walking
         if (characterController.velocity.magnitude > stats.walkingThreshold)
         {
-            stats.IncreaseAgility();
+            var agilityIncrease = 0.1f;
+            // Increase the agility progress vector
+            stats.IncreaseProgressVectors(0,0,agilityIncrease,0,0,0);
         }
     }
 }
