@@ -29,6 +29,7 @@ public class CharacterStats : MonoBehaviour
     public Vector6 Stats { get; set; }
     public Vector6 ProgressVectors { get; private set; }
 
+    private Dictionary<string, int> stats = new Dictionary<string, int>();
 
     private void Start()
     {
@@ -52,5 +53,17 @@ public class CharacterStats : MonoBehaviour
         // ActionType is an enum you define that corresponds to different actions
         // that can increase a stat.
         
+    }
+    public int GetStatValue(string statName)
+    {
+        // Check if the stat exists in the stats dictionary
+        if (!stats.ContainsKey(statName))
+        {
+            // If not, return 0 or some default value
+            return 0;
+        }
+
+        // Return the value of the stat
+        return stats[statName];
     }
 }
