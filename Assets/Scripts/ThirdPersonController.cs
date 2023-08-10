@@ -98,6 +98,7 @@ namespace StarterAssets
         private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
+        private int _animIDAttack;
 
         // Advancement
         private CharacterAdvancementSystem advancementSystem;
@@ -169,6 +170,13 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            DoAttack();
+
+            if (_input.attack)
+            {
+                _animator.SetTrigger("Attack");
+            }
+
         }
 
         private void LateUpdate()
@@ -183,6 +191,7 @@ namespace StarterAssets
             _animIDJump = Animator.StringToHash("Jump");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+            _animIDAttack = Animator.StringToHash("Attack");
         }
 
         private void GroundedCheck()
@@ -289,6 +298,19 @@ namespace StarterAssets
             }
         }
 
+        private void DoAttack()
+        {
+            if (_hasAnimator)
+            {
+                _animator.SetBool(_animIDAttack, false);
+            }
+            if (_input.attack)
+            {
+                _animator.SetBool(_animIDAttack, true);
+                _animator.SetBool(_animIDAttack, false);
+            }
+            
+        }
         private void JumpAndGravity()
         {
             if (Grounded)

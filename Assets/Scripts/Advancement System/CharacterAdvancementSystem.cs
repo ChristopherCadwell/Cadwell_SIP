@@ -22,17 +22,19 @@ public class CharacterAdvancementSystem : MonoBehaviour
     }
 
     private void Update()
-    {
-        if (characterController.velocity.magnitude > stats.walkingThreshold)
+    {if(characterController != null)
         {
-            var agilityIncrease = 0.01f;
-            // Increase the Agility vector
-            agility = agility + agilityIncrease;
+            if (characterController.velocity.magnitude > stats.walkingThreshold)
+            {
+                var agilityIncrease = 0.01f;
+                // Increase the Agility vector
+                agility = agility + agilityIncrease;
 
-            SetStats(strength, intelligence, willpower, luck, agility, charisma);
-            stats.UpdateValues();
-            Debug.Log("Updated");
+                SetStats(strength, intelligence, willpower, luck, agility, charisma);
+                stats.UpdateValues();
+            }
         }
+        
     }
     public void GetStats()
     {
