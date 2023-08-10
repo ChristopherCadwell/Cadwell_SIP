@@ -19,6 +19,7 @@ public class CharacterStats : MonoBehaviour
     public float maxMana;
     public float baseMoveSpeed;
     public float currentHealth;
+    public float healthPercent = 1;
 
     public float walkingThreshold = 0.1f;
 
@@ -77,8 +78,11 @@ public class CharacterStats : MonoBehaviour
         // Determine misc values
         baseDefense = (Stats.a + Stats.d) / 4;
         maxHealth = 20 + (Stats.a * 2);
+        currentHealth = healthPercent * maxHealth;
         maxMana = 20 + (Stats.b * 2);
         baseMoveSpeed = 1 + (Stats.e / 4);
+        healthPercent = currentHealth / maxHealth;
+       
     }
 
     public void TakeDamage(float damageAmount)

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyStats : MonoBehaviour
 {
+    public float variancePercent = 0.1f;
     public Vector6 Stats { get; set; }
     public float health;
     public float defense;
@@ -40,7 +41,7 @@ public class EnemyStats : MonoBehaviour
         Vector6 normalizedDifference = difference.Normalize();
 
         // Scale the normalized difference by 10% of the player's stats
-        Vector6 scaledDifference = normalizedDifference * 0.10f;
+        Vector6 scaledDifference = normalizedDifference * variancePercent;
 
         // Calculate the enemy's stats by adding this scaled difference to the player's stats
         Stats = playerStats + scaledDifference;
