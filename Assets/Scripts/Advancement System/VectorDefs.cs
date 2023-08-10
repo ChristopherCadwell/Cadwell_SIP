@@ -17,6 +17,12 @@ namespace NVectors
             this.c = c;
             this.d = d;
         }
+        public static Vector4 Lerp(Vector4 start, Vector4 end, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Vector4(Mathf.Lerp(start.a, end.a, t), Mathf.Lerp(start.b, end.b, t), Mathf.Lerp(start.c, end.c, t), Mathf.Lerp(start.d, end.d, t));
+        }
+
 
         // Vector addition
         public static Vector4 operator +(Vector4 v1, Vector4 v2)
@@ -118,6 +124,12 @@ namespace NVectors
             this.d = d;
             this.e = e;
         }
+        public static Vector5 Lerp(Vector5 start, Vector5 end, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Vector5(Mathf.Lerp(start.a, end.a, t), Mathf.Lerp(start.b, end.b, t), Mathf.Lerp(start.c, end.c, t), Mathf.Lerp(start.d, end.d, t), Mathf.Lerp(start.e, end.e, t));
+        }
+
 
         // Vector addition
         public static Vector5 operator +(Vector5 v1, Vector5 v2)
@@ -222,11 +234,23 @@ namespace NVectors
             this.e = e;
             this.f = f;
         }
+        public static Vector6 Lerp(Vector6 start, Vector6 end, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Vector6(Mathf.Lerp(start.a, end.a, t), Mathf.Lerp(start.b, end.b, t), Mathf.Lerp(start.c, end.c, t), Mathf.Lerp(start.d, end.d, t), Mathf.Lerp(start.e, end.e, t), Mathf.Lerp(start.f, end.f, t));
+        }
+
 
         // Vector addition
         public static Vector6 operator +(Vector6 v1, Vector6 v2)
         {
             return new Vector6(v1.a + v2.a, v1.b + v2.b, v1.c + v2.c, v1.d + v2.d, v1.e + v2.e, v1.f + v2.f);
+        }
+
+        //Subtraction
+        public static Vector6 operator -(Vector6 a, Vector6 b)
+        {
+            return new Vector6(a.a - b.a, a.b - b.b, a.c - b.c, a.d - b.d, a.e - b.e, a.f - b.f);
         }
 
         // Scalar multiplication
@@ -330,6 +354,12 @@ namespace NVectors
             this.f = f;
             this.g = g;
         }
+        public static Vector7 Lerp(Vector7 start, Vector7 end, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Vector7(Mathf.Lerp(start.a, end.a, t), Mathf.Lerp(start.b, end.b, t), Mathf.Lerp(start.c, end.c, t), Mathf.Lerp(start.d, end.d, t), Mathf.Lerp(start.e, end.e, t), Mathf.Lerp(start.f, end.f, t), Mathf.Lerp(start.g, end.g, t));
+        }
+
 
         // Vector addition
         public static Vector7 operator +(Vector7 v1, Vector7 v2)
@@ -442,6 +472,12 @@ namespace NVectors
             this.g = g;
             this.h = h;
         }
+        public static Vector8 Lerp(Vector8 start, Vector8 end, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Vector8(Mathf.Lerp(start.a, end.a, t), Mathf.Lerp(start.b, end.b, t), Mathf.Lerp(start.c, end.c, t), Mathf.Lerp(start.d, end.d, t), Mathf.Lerp(start.e, end.e, t), Mathf.Lerp(start.f, end.f, t), Mathf.Lerp(start.g, end.g, t), Mathf.Lerp(start.h, end.h, t));
+        }
+
 
         // Vector addition
         public static Vector8 operator +(Vector8 v1, Vector8 v2)
@@ -558,6 +594,12 @@ namespace NVectors
             this.h = h;
             this.i = i;
         }
+        public static Vector9 Lerp(Vector9 start, Vector9 end, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Vector9(Mathf.Lerp(start.a, end.a, t), Mathf.Lerp(start.b, end.b, t), Mathf.Lerp(start.c, end.c, t), Mathf.Lerp(start.d, end.d, t), Mathf.Lerp(start.e, end.e, t), Mathf.Lerp(start.f, end.f, t), Mathf.Lerp(start.g, end.g, t), Mathf.Lerp(start.h, end.h, t), Mathf.Lerp(start.i, end.i, t));
+        }
+
 
         // Vector addition
         public static Vector9 operator +(Vector9 v1, Vector9 v2)
@@ -678,6 +720,12 @@ namespace NVectors
             this.i = i;
             this.j = j;
         }
+        public static Vector10 Lerp(Vector10 start, Vector10 end, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Vector10(Mathf.Lerp(start.a, end.a, t), Mathf.Lerp(start.b, end.b, t), Mathf.Lerp(start.c, end.c, t), Mathf.Lerp(start.d, end.d, t), Mathf.Lerp(start.e, end.e, t), Mathf.Lerp(start.f, end.f, t), Mathf.Lerp(start.g, end.g, t), Mathf.Lerp(start.h, end.h, t), Mathf.Lerp(start.i, end.i, t), Mathf.Lerp(start.j, end.j, t));
+        }
+
 
         // Vector addition
         public static Vector10 operator +(Vector10 v1, Vector10 v2)

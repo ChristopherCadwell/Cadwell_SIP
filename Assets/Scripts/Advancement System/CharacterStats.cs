@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
-    public float strength = 1.0f;
-    public float intelligence = 1.0f;
-    public float willpower = 1.0f;
-    public float luck = 1.0f;
-    public float agility = 1.0f;
-    public float charisma = 1.0f;
+    public float strength;
+    public float intelligence;
+    public float willpower;
+    public float luck;
+    public float agility;
+    public float charisma;
     public float baseDefense;
     public float maxHealth;
     public float maxMana;
@@ -77,28 +77,44 @@ public class CharacterStats : MonoBehaviour
     private void Die()
     {
         // Handle character death here. E.g., play a death animation, reload the scene, etc.
+        gameObject.SetActive(false);
     }
     public void DealDamage()
     {
-        var origin = fist.transform.position;
-        Debug.Log("Damage function");
-        // Use a raycast or collider check to see if you're hitting an opponent
-        // If hitting an opponent, access their CharacterStats and call TakeDamage
+        // Define the size of the box (for example, 1x1x1 units)
+        Vector3 boxSize = new Vector3(1f, 1f, 1f);
+
+        // Define the direction to cast the box (forward from the player)
+        Vector3 direction = transform.forward;
+
+        // Define the maximum distance the box should be cast
+        float maxDistance = 2f; // You can adjust this value
 
         RaycastHit hit;
-        float punchRange = 1f; // Example value, adjust accordingly
-        Debug.Log("Looking for target");
-        Debug.DrawRay(origin, transform.forward * punchRange, Color.red, 2.0f);
-        if (Physics.Raycast(origin, transform.forward, out hit, punchRange))
+        if (Physics.BoxCast(transform.position, boxSize / 2, direction, out hit, Quaternion.identity, maxDistance))
         {
-            Debug.Log("Hit Something");
-            CharacterStats opponentStats = hit.collider.GetComponent<CharacterStats>();
-            if (opponentStats != null)
+            Debug.Log("BoxCast hit: " + hit.collider.name); // Log the name of the object hit
+
+            // Visualize the boxcast in the editor (for 2 seconds)
+            Debug.DrawRay(transform.position, direction * hit.distance, Color.red, 2.0f);
+
+            // Check if we hit an enemy and deal damage
+            EnemyStats enemy = hit.collider.GetComponent<EnemyStats>();
+            if (enemy != null)
             {
-                Debug.Log("Found target");
-                float damageAmount = 10f; // Example value, adjust accordingly
-                opponentStats.TakeDamage(damageAmount);
+                Debug.Log("Dealing damage to enemy."); // Log when we're about to deal damage
+                                                       // For this example, we're using a fixed damage value, but you can adjust based on player's strength or other factors
+                enemy.TakeDamage(Stats.a * 2);
+            }
+            else
+            {
+                Debug.Log("Hit object is not an enemy."); // Log if the hit object is not an enemy
             }
         }
+        else
+        {
+            Debug.Log("BoxCast did not hit anything."); // Log when boxcast doesn't detect any hits
+        }
     }
+
 }
