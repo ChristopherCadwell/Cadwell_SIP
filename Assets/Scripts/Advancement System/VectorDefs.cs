@@ -234,6 +234,10 @@ namespace NVectors
             this.e = e;
             this.f = f;
         }
+        public float Max()
+        {
+            return Mathf.Max(a, b, c, d, e, f);
+        }
         public static Vector6 Lerp(Vector6 start, Vector6 end, float t)
         {
             t = Mathf.Clamp01(t);

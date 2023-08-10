@@ -308,12 +308,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6772278cc547cc4db522984ed95bf27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  strength: 0
-  intelligence: 0
-  willpower: 0
-  luck: 0
-  agility: 0
-  charisma: 0
 --- !u!114 &575175946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,6 +332,35 @@ MonoBehaviour:
   baseMoveSpeed: 0
   currentHealth: 0
   walkingThreshold: 1
+  activeBuffs: []
+--- !u!114 &575175954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575175944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34cc4d3992385c745b8261df82f50824, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 20
+  multiplier: 1
+--- !u!114 &575175955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575175944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94a814809a87dc14cb5c2854e5cdd688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 20
+  lerpSpeed: 0.05
 --- !u!4 &575404183 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2914591400036298008, guid: 4c9d8f49d23e3884b9d83f5c13adeecd,

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NVectors;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 using static CharacterStats;
@@ -143,10 +144,11 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
+            stats = GetComponent<CharacterStats>();
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -170,12 +172,8 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
-            DoAttack();
-
-            if (_input.attack)
-            {
-                _animator.SetTrigger("Attack");
-            }
+            HandleAttack();
+            HandlePotionConsumption();
 
         }
 
@@ -298,18 +296,67 @@ namespace StarterAssets
             }
         }
 
-        private void DoAttack()
+        private void HandlePotionConsumption()
         {
-            if (_hasAnimator)
+            StatModifierBuff potionBuff = gameObject.GetComponent<StatModifierBuff>();
+            MagnitudeModifierBuff magBuff = gameObject.GetComponent<MagnitudeModifierBuff>();
+            if (potionBuff == null)  // If the component doesn't exist, add it
             {
-                _animator.SetBool(_animIDAttack, false);
+                potionBuff = gameObject.AddComponent<StatModifierBuff>();
             }
+            if (magBuff == null)
+            {
+                magBuff = gameObject.AddComponent<MagnitudeModifierBuff>();
+            }
+
+            if (_input.consumePotion1)
+            {
+                potionBuff.ApplyPotion1();
+                _input.consumePotion1 = false;
+            }
+            else if (_input.consumePotion2)
+            {
+                potionBuff.ApplyPotion2();
+                _input.consumePotion2 = false;
+            }
+            else if (_input.consumePotion3)
+            {
+                potionBuff.ApplyPotion3();
+                _input.consumePotion3 = false;
+            }
+            else if (_input.consumePotion4)
+            {
+                magBuff.ApplyPotion4();
+                _input.consumePotion4 = false;
+            }
+            else if (_input.consumePotion5)
+            {
+                magBuff.ApplyPotion5();
+                _input.consumePotion5 = false;
+            }
+            else if (_input.consumePotion6)
+            {
+                magBuff.ApplyPotion6();
+                _input.consumePotion6 = false;
+            }
+
+
+        }
+        private void HandleAttack()
+        {
             if (_input.attack)
             {
-                _animator.SetBool(_animIDAttack, true);
-                _animator.SetBool(_animIDAttack, false);
+                _animator.SetBool("Attack", true);
+                _input.attack = false; // Reset the attack input after handling it
             }
-            
+            else
+            {
+                _animator.SetBool("Attack", false);
+            }
+        }
+        public void ResetAttack()
+        {
+            _animator.SetBool("Attack", false);
         }
         private void JumpAndGravity()
         {
@@ -379,14 +426,12 @@ namespace StarterAssets
                 _verticalVelocity += Gravity * Time.deltaTime;
             }
         }
-
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
             if (lfAngle < -360f) lfAngle += 360f;
             if (lfAngle > 360f) lfAngle -= 360f;
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
         }
-
         private void OnDrawGizmosSelected()
         {
             Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
@@ -428,5 +473,5 @@ namespace StarterAssets
 
     }
 
-    
+
 }

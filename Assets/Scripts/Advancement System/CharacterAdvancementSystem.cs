@@ -8,12 +8,9 @@ public class CharacterAdvancementSystem : MonoBehaviour
 {
     private CharacterController characterController;
     private CharacterStats stats;
-    [SerializeField] private float strength;
-    [SerializeField] private float intelligence;
-    [SerializeField] private float willpower;
-    [SerializeField] private float luck;
-    [SerializeField] private float agility;
-    [SerializeField] private float charisma;
+
+
+    private const float baseIncreaseAmount = 0.01f; // The base increase for stats
 
     private void Start()
     {
@@ -27,28 +24,99 @@ public class CharacterAdvancementSystem : MonoBehaviour
         {
             if (characterController.velocity.magnitude > stats.walkingThreshold)
             {
-                var agilityIncrease = 0.01f;
                 // Increase the Agility vector
-                agility = agility + agilityIncrease;
+                IncreaseAgility();
 
-                SetStats(strength, intelligence, willpower, luck, agility, charisma);
                 stats.UpdateValues();
             }
         }
     }
-    public void GetStats()
+    // Stat increases
+    public void IncreaseStrength()
     {
-        strength = stats.Stats.a;
-        intelligence = stats.Stats.b;
-        willpower = stats.Stats.c;
-        luck = stats.Stats.d;
-        agility = stats.Stats.e;
-        charisma = stats.Stats.f;
+        float increaseAmount = CalculateIncrease(stats.Stats.a);
+        // Adjust the increase amount based on active MagnitudeModifierBuff
+        MagnitudeModifierBuff[] magnitudeBuffs = stats.GetComponents<MagnitudeModifierBuff>();
+        foreach (var buff in magnitudeBuffs)
+        {
+            increaseAmount = buff.ApplyMultiplier(increaseAmount);
+        }
+
+        stats.strength += increaseAmount;
+        stats.SetStats();
     }
-    public void SetStats(float Str, float Int, float Wil, float Luc, float Agi, float Cha)
+
+    public void IncreaseIntelligence()
     {
-        stats.Stats = new Vector6(Str, Int, Wil, Luc, Agi, Cha);
+        float increaseAmount = CalculateIncrease(stats.Stats.b);
+        // Adjust the increase amount based on active MagnitudeModifierBuff
+        MagnitudeModifierBuff[] magnitudeBuffs = stats.GetComponents<MagnitudeModifierBuff>();
+        foreach (var buff in magnitudeBuffs)
+        {
+            increaseAmount = buff.ApplyMultiplier(increaseAmount);
+        }
+
+        stats.intelligence += increaseAmount;
+        stats.SetStats();
     }
+    public void IncreaseWillpower()
+    {
+        float increaseAmount = CalculateIncrease(stats.Stats.c);
+        // Adjust the increase amount based on active MagnitudeModifierBuff
+        MagnitudeModifierBuff[] magnitudeBuffs = stats.GetComponents<MagnitudeModifierBuff>();
+        foreach (var buff in magnitudeBuffs)
+        {
+            increaseAmount = buff.ApplyMultiplier(increaseAmount);
+        }
+
+        stats.willpower += increaseAmount;
+        stats.SetStats();
+    }
+    public void IncreaseLuck()
+    {
+        float increaseAmount = CalculateIncrease(stats.Stats.d);
+        // Adjust the increase amount based on active MagnitudeModifierBuff
+        MagnitudeModifierBuff[] magnitudeBuffs = stats.GetComponents<MagnitudeModifierBuff>();
+        foreach (var buff in magnitudeBuffs)
+        {
+            increaseAmount = buff.ApplyMultiplier(increaseAmount);
+        }
+
+        stats.luck += increaseAmount;
+        stats.SetStats();
+    }
+    public void IncreaseAgility()
+    {
+        float increaseAmount = CalculateIncrease(stats.Stats.e);
+        // Adjust the increase amount based on active MagnitudeModifierBuff
+        MagnitudeModifierBuff[] magnitudeBuffs = stats.GetComponents<MagnitudeModifierBuff>();
+        foreach (var buff in magnitudeBuffs)
+        {
+            increaseAmount = buff.ApplyMultiplier(increaseAmount);
+        }
+
+        stats.agility += increaseAmount;
+        stats.SetStats();
+    }
+    public void IncreaseCharisma()
+    {
+        float increaseAmount = CalculateIncrease(stats.Stats.f);
+        // Adjust the increase amount based on active MagnitudeModifierBuff
+        MagnitudeModifierBuff[] magnitudeBuffs = stats.GetComponents<MagnitudeModifierBuff>();
+        foreach (var buff in magnitudeBuffs)
+        {
+            increaseAmount = buff.ApplyMultiplier(increaseAmount);
+        }
+
+        stats.charisma += increaseAmount;
+        stats.SetStats();
+    }
+
+    private float CalculateIncrease(float currentStatValue)
+    {
+        return baseIncreaseAmount / (1 + currentStatValue);
+    }
+
 
     public void TakeDamage(float attackerStrength)
     {

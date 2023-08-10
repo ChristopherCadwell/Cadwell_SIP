@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NVectors;
 using StarterAssets;
 using UnityEditorInternal;
@@ -31,6 +32,14 @@ public class CharacterStats : MonoBehaviour
 
     private GameObject fist;
 
+    //Stuff for Buffs
+    private int activeBuffCount = 0;
+    private BaseStats _baseStats = new BaseStats();
+    public Buff[] activeBuffs;
+    private Vector6 originalStats; // To store the character's stats before the buff is applied
+    private bool isBuffActive = false; // To check if a buff is currently active
+    private Dictionary<Buff, Vector6> buffToPriorStats = new Dictionary<Buff, Vector6>(); // To map each buff to the character's stats just before it was applied
+
     private void Start()
     {
         controller = GetComponent<ThirdPersonController>();
@@ -46,8 +55,15 @@ public class CharacterStats : MonoBehaviour
         maxMana = 20 + (intelligence * 2);
         baseMoveSpeed = 1 + (agility / 4);
 
-        system.GetStats();
         currentHealth = maxHealth;
+    }
+    private void FixedUpdate()
+    {
+        UpdateValues();
+    }
+    public void SetStats()
+    {
+        Stats = new Vector6(strength, intelligence, willpower, luck, agility, charisma);
     }
     public void UpdateValues()
     {
@@ -117,4 +133,64 @@ public class CharacterStats : MonoBehaviour
         }
     }
 
+    public MagnitudeModifierBuff[] GetActiveMagnitudeBuffs()
+    {
+        return activeBuffs.OfType<MagnitudeModifierBuff>().ToArray();
+    }
+    public void ApplyBuff(Buff buff)
+    {
+        // If this is the first buff being applied, save the current stats as base stats
+        if (buffToPriorStats.Count == 0)
+        {
+            _baseStats.Stats = Stats;
+
+            // Increment the active buff count
+            activeBuffCount++;
+        }
+
+        // Always apply the buff's stats on top of the current stats
+        Stats += buff.buffStats;
+
+        // Start the buff coroutine
+        StartCoroutine(BuffCoroutine(buff));
+    }
+    public void RemoveBuff(Buff buff)
+    {
+        // Decrement the active buff count
+        activeBuffCount--;
+    }
+
+
+    private IEnumerator BuffCoroutine(Buff buff)
+    {
+        yield return new WaitForSeconds(buff.duration);
+
+        // Remove only the effects of the expiring buff
+        Stats -= buff.buffStats;
+
+        // If this was the last active buff, revert to the base stats
+        if (activeBuffCount == 0)
+        {
+            Stats = _baseStats.Stats;
+        }
+        else
+        {
+            // Reapply the effects of other active buffs
+            foreach (var activeBuff in buffToPriorStats.Keys)
+            {
+                if (activeBuff != buff)  // Skip the expiring buff
+                {
+                    Stats += activeBuff.buffStats;
+                }
+            }
+        }
+
+        buffToPriorStats.Remove(buff);
+    }
+}
+
+
+public class BaseStats
+{
+    public Vector6 Stats;
 }
