@@ -15,6 +15,10 @@ public class EnemyStats : MonoBehaviour
     public float luck;
     public float agility;
     public float charisma;
+    public float multiplier = 1.0f;
+    public float dynamicMultiplier = 1.0f;
+    public bool isDynamicDifficulty;
+
 
     public GameObject enemyPrefab; // The enemy prefab for respawning
     private bool isDead = false; // Track if the enemy is currently dead
@@ -31,32 +35,7 @@ public class EnemyStats : MonoBehaviour
         colliders = GetComponentsInChildren<Collider>();
         childObject = transform.GetChild(0);
     }
-    public void InitializeBasedOnPlayer(Vector6 playerStats)
-    {
-        // Calculate the difference between the player's stats and some baseline stats (e.g., default enemy stats)
-        Vector6 baselineStats = new Vector6(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f); // You can adjust this to whatever base values you want
-        Vector6 difference = playerStats - baselineStats;
-
-        // Normalize this difference to get values between -1 and 1
-        Vector6 normalizedDifference = difference.Normalize();
-
-        // Scale the normalized difference by 10% of the player's stats
-        Vector6 scaledDifference = normalizedDifference * variancePercent;
-
-        // Calculate the enemy's stats by adding this scaled difference to the player's stats
-        Stats = playerStats + scaledDifference;
-
-        // Setting health and defense based on the generated stats
-        maxHealth = 20 + Stats.a * 2;
-        health = maxHealth;
-        defense = Stats.a + Stats.d / 20;
-        strength = Stats.a;
-        intelligence = Stats.b;
-        willpower = Stats.c;
-        luck = Stats.d;
-        agility = Stats.e;
-        charisma = Stats.f;
-    }
+    
 
     public void TakeDamage(float attackerStrength)
     {
@@ -67,10 +46,7 @@ public class EnemyStats : MonoBehaviour
         Debug.Log("Dealt " + damageDealt + " Damage");
         if (health <= 0 && !isDead)
         {
-            isDead = true;
-            Debug.Log("Enemy died. Attempting to hide.");
-            SetActiveState(false);
-            StartCoroutine(RespawnAfterDelay());
+           Debug.Log("Difference between stat values = "+ HandleDeath());
         }
     }
 
@@ -83,10 +59,19 @@ public class EnemyStats : MonoBehaviour
     private void Respawn()
     {
         isDead = false;
-        InitializeBasedOnPlayer(FindObjectOfType<CharacterStats>().Stats); // Assuming there's only one player character in the scene
-                                                                           // Reset health and other stats if necessary
+        if (isDynamicDifficulty)
+        {
+            multiplier = dynamicMultiplier;
+            InitializeBasedOnPlayer(FindObjectOfType<CharacterStats>().Stats);
+        }
+        else
+        {
+            InitializeBasedOnPlayer(FindObjectOfType<CharacterStats>().Stats);
+        }
+        
+        // Reset health and other stats
         health = 20 + Stats.a * 2;
-        defense = Stats.a + Stats.d / 4;
+        defense = Stats.a / 50;
         SetActiveState(true); // Show and make the enemy interactable again
     }
 
@@ -108,4 +93,38 @@ public class EnemyStats : MonoBehaviour
             collider.enabled = state;
         }
     }
+    public void InitializeBasedOnPlayer(Vector6 playerStats)
+    {
+        // Calculate the scaled difference directly from the player's stats
+        Vector6 scaledDifference = playerStats * multiplier;
+
+        // Calculate the enemy's stats by adding the scaled difference to the player's stats
+        Stats = playerStats + scaledDifference;
+
+        // Setting health and defense based on the generated stats
+        maxHealth = 20 + Stats.a * 2;
+        health = maxHealth;
+        defense = Stats.a + Stats.d / 20;
+        strength = Stats.a;
+        intelligence = Stats.b;
+        willpower = Stats.c;
+        luck = Stats.d;
+        agility = Stats.e;
+        charisma = Stats.f;
+    }
+    
+        public float HandleDeath()
+        {
+            isDead = true;
+            dynamicMultiplier += 0.1f;
+            Debug.Log("Enemy died. Attempting to hide.");
+            SetActiveState(false);
+            StartCoroutine(RespawnAfterDelay());
+
+            // Calculate the difference between this object's stats and the player stats
+            Vector6 difference = Stats - FindObjectOfType<CharacterStats>().Stats;
+            // Return the magnitude of the difference
+            return difference.Magnitude();
+        }
+    
 }
